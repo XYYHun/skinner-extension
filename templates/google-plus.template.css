@@ -1,9 +1,12 @@
-body#yDmH0d
+body#yDmH0d,
+textarea
 {
   font-family: /* $default-font[*/sans-serif/*]*/;
-
   color: /* $foreground-color[*/inherit/*]*/;
+}
 
+body#yDmH0d
+{
   background: /* $background[*/radial-gradient(circle at 80% 20%, rgba(180,220,255,1) 0%, rgba(80,160,240,1) 100%) fixed/*]*/ !important;
   background-size: /* $background-size[*/auto/*]*/ !important;
 }
@@ -152,11 +155,6 @@ body#yDmH0d > trans-layer > div
 }
 /*}*/
 
-.JZUAbb
-{
-  width: initial;
-}
-
 .E4TZmd {
   background-color: transparent;
 }
@@ -197,6 +195,13 @@ body#yDmH0d > trans-layer > div
 .BCNiN.g0Pkrd
 {
   background-color: transparent;
+}
+
+.FEgP2b>span
+{
+  background-color: transparent;
+  background-image: none;
+  color: /* $highlight-color[*/initial/*]*/;
 }
 
 /* content Controls */
