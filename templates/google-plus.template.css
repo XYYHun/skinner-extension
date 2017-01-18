@@ -1,0 +1,272 @@
+body#yDmH0d
+{
+  font-family: /* $default-font[*/sans-serif/*]*/;
+
+  color: /* $foreground-color[*/inherit/*]*/;
+
+  background: /* $background[*/radial-gradient(circle at 80% 20%, rgba(180,220,255,1) 0%, rgba(80,160,240,1) 100%) fixed/*]*/ !important;
+  background-size: /* $background-size[*/auto/*]*/ !important;
+}
+
+/*? link-color {*/
+a
+{
+  color: /* $link-color[*/inherit/*]*/
+}
+/*}*/
+
+.Jvazdb, .JXv70c
+{
+  background: transparent !important;
+}
+
+body#yDmH0d > trans-layer > div
+{
+  background-color: transparent !important;
+}
+
+/*? !banner-original {*/
+
+.XS1fT,   /* top bar*/
+.GyPXQ    /* new content button */
+{
+  background: /* $banner-background[*/rgba(0,120,210,.95)/*]*/ !important;
+}
+
+.XS1fT
+{
+  box-shadow: /* $banner-shadow[*/0 -1px 2px 3px rgba(0,0,0,.8)/*]*/;
+}
+
+/*? banner-foreground-color {*/
+.XS1fT,
+.s49ete .FGhx7c, .s49ete .DPvwYc
+{
+  color: /* $banner-foreground-color[*/#fff/*]*/ !important;
+}
+
+.XS1fT path
+{
+  fill: /* $banner-foreground-color[*/#fff/*]*/ !important;
+}
+
+.Ww5CL
+{
+  border-left-color: /* $banner-foreground-color[*/#fff/*]*/ !important;
+}
+/*}*/
+
+/*}*/
+
+/*? !sidebar-original {*/
+  
+.OFyC1e
+{
+  background: /* $sidebar-background[*/rgba(255, 255, 255, .8)/*]*/;
+  box-shadow: /* $sidebar-shadow[*/-2px 0 2px 3px rgba(0,0,0,.4)/*]*/;
+}
+  
+.cjGgHb .M9kDrd:hover, .M9kDrd:focus
+{
+  background: rgba(255, 255, 255, .5);
+}
+
+.M9kDrd, .M9kDrd .DCYkOe, .KpEl0 path
+{
+  /*? foreground-color, !sidebar-foreground-color {*/
+  fill: /* $foreground-color[*/#333/*]*/;
+  color: /* $foreground-color[*/#333/*]*/;
+  /*}*/
+  /*? sidebar-foreground-color {*/
+  fill: /* $sidebar-foreground-color[*/#333/*]*/;
+  color: /* $sidebar-foreground-color[*/#333/*]*/;
+  /*}*/
+}
+
+.Do0spe, .mfqKsb, .DcCBcf
+{
+  color: /* $secondary-color[*/#333/*]*/;
+}
+
+/*? sidebar-show-seperator {*/
+.PvjVhe {
+  border-bottom: 1px solid /* $sidebar-foreground-color[*/#f0f0f0/*]*/;
+}
+/*}*/
+
+/*? !sidebar-show-seperator {*/
+.PvjVhe {
+  border: none;
+}
+/*}*/
+
+/*}*/
+
+/*? !content-original {*/
+
+.Ihwked, .LHyahc
+{
+  box-sizing: border-box;
+  background: /* $content-background[*/rgba(255, 255, 255, .9)/*]*/ !important;
+  background-size: /*content-background-size[*/auto/*]*/ !important;
+  box-shadow: /* $content-shadow[*/5px 5px 1px -1px rgba(0,0,0,.5), inset 3px 3px 3px -1px rgba(255, 255, 255, .5)/*]*/ !important;
+/*? !content-customized {*/
+  border-radius: 2px;
+  border-top-left-radius: 16px;
+  border: /* $border[*/1px solid rgba(0,0,0,.2)/*]*/;
+/*}*/
+  /* $content-customized[*/ /*]*/
+}
+
+.m3JvWd, /* Poster name.*/
+.vGowKb,
+.Tuxepf,
+.Gu1oT
+{
+  color: /* $highlight-color[*/initial/*]*/;
+}
+
+.Tq8tEc,
+.g6UaYd,
+.Cj4Jbc,
+.ahil4d.qhIQqf,
+.ikPEid
+{
+  color: /* $foreground-color[*/initial/*]*/;
+}
+
+.MuKKBb,
+.f6umD,
+.gmFStc,
+.IAxesc, /* location infomation. */
+.vHTiT /* +1 of comments */
+{
+  color: /* $secondary-color[*/initial/*]*/;
+}
+
+/*? link-color {*/
+.sEgqod,
+.WiMrBe
+{
+  color: /* $link-color[*/inherit/*]*/
+}
+/*}*/
+
+.JZUAbb
+{
+  width: initial;
+}
+
+.E4TZmd {
+  background-color: transparent;
+}
+  
+.fu5e3b.qhIQqf:after {
+  background: transparent;
+}
+
+.J3fjEb.qhIQqf:after, .ahil4d.qhIQqf:after
+{
+  background: transparent;
+}
+
+/* content Reference */
+  
+.f8kJQb, .B5gIxb, .bTEgD, .F7tj9b, .gdAenb, .tjHUud
+{
+  background-color: transparent;
+}
+
+.PULuYe, .YVtJp {
+  border-top: 1px solid rgba(127,127,127,.5);
+  border-bottom: 1px solid /* $foreground-color[*/#fff/*]*/;
+}
+
+/* content Comments */
+
+.LZOeXd, .pQGRZe, .cYxVC, .RIrM6d {
+  background: /* $content-comments-background[*/rgba(160,200,250,.1)/*]*/;
+}
+  
+.XGOYJd>:first-child, .ZYK0Xb, .LZOeXd
+{
+  border-top: /* $border[*/solid 1px rgba(127,127,127,.5)/*]*/;
+  border-width: 1px;
+}
+
+.BCNiN.g0Pkrd
+{
+  background-color: transparent;
+}
+
+/* content Controls */
+  
+/*? !tweak-portrait:false {*/
+.URgs7, .TwPeSd, .m4bz4c, .ol8wQ {
+  border: 2px solid rgba(255, 255, 255, .8);
+  box-shadow: 0px 0px 1px 1px rgba(63, 63, 63, .8) !important;
+  margin: -2px;
+}
+
+.Tq8tEc {
+  top: 8px;
+  bottom: 8px;
+  left: 12px;
+  line-height: 20px;
+}
+
+.m4bz4c {
+  margin: 2px;
+  margin-right: 6px;
+}
+
+/*}*/
+
+/*? !tweak-controls:false {*/
+.bYmF4e, .GsLz7c
+{
+  background: transparent;
+  border: 1px solid rgba(127,127,127,.25);
+}
+
+.cjGgHb .GsLz7c:hover,
+.cjGgHb .GsLz7c:hover .G7pzvd path
+{
+  background: transparent;
+  box-shadow: none;
+  border-color: /* $highlight-color[*/#07f/*]*/;
+  color: /* $highlight-color[*/#07f/*]*/;
+  fill: /* $highlight-color[*/#07f/*]*/;
+}
+/*}*/
+
+/*}*/
+
+/* Some font may cause vertical alignment issus. */
+.GsLz7c, .bYmF4e, .nB0Dif
+{
+  font-family: Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
+}
+
+/* Google use #fff to hide text, transparent if prefered. */
+.QInnmc, .dzuq1e.iCPjVb .mFYoKe,
+.cjGgHb .GcESAf.hE2QI:hover .qXj2He,
+.cjGgHb .GcESAf.hE2QI:hover .XJ0Q9e,
+.V2SCpf.u3bW4e .GcESAf.hE2QI .qXj2He,
+.V2SCpf.u3bW4e .GcESAf.hE2QI .XJ0Q9e,
+.GcESAf.hE2QI .dzuq1e.skCPIe .qXj2He,
+.GcESAf.hE2QI .dzuq1e.skCPIe .XJ0Q9e,
+.BCNiN:hover .gmFStc, .BCNiN.u3bW4e .gmFStc,
+.p9Nwte, .Yylo3e path
+{
+  color: transparent !important;
+  fill: transparent !important;
+}
+
+.cjGgHb .GcESAf:hover .QInnmc, .cjGgHb .GcESAf:hover .mFYoKe, .V2SCpf.u3bW4e .QInnmc, .V2SCpf.u3bW4e .mFYoKe, .GcESAf .dzuq1e.skCPIe .QInnmc, .GcESAf .dzuq1e.skCPIe .mFYoKe
+{
+  color: /* $secondary-color[*/#757575/*]*/ !important;
+  fill: /* $secondary-color[*/#757575/*]*/ !important;
+}
+
+/* $user-style[*/ /*]*/
