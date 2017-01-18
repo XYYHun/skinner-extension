@@ -199,6 +199,34 @@ let template_table = {};
 
   /* initial */
 
+  const storage_version = '0.1.2';
+
+  storage_l.get('initialled', function(data)
+  {
+    if (!('initialled' in data))
+    {
+      let to_set = {
+        'enabled': true,
+        'initialled': true,
+        'storage-version' : storage_version,
+      }
+
+      storage_l.set(to_set);
+    }
+
+    if (data['storage-version'] != storage_version)
+    {
+      storage_l.remove([
+        'generated-style:default:addon-google-plus',
+        'generated-style:profile-1:addon-google-plus',
+        'generated-style:profile-2:addon-google-plus',
+        'generated-style:profile-3:addon-google-plus',
+        'generated-style:profile-4:addon-google-plus',
+        'generated-style:profile-5:addon-google-plus',
+      ]);
+    }
+  });
+
   storage_s.get(['profile-table', 'template-table'], function(data)
   {
     profile_table = data['profile-table'] || {};

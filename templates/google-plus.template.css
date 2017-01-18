@@ -14,7 +14,7 @@ body#yDmH0d
 /*? link-color {*/
 a
 {
-  color: /* $link-color[*/inherit/*]*/
+  color: /* $link-color[*/inherit/*]*/;
 }
 /*}*/
 
@@ -77,18 +77,18 @@ body#yDmH0d > trans-layer > div
 .M9kDrd, .M9kDrd .DCYkOe, .KpEl0 path
 {
   /*? foreground-color, !sidebar-foreground-color {*/
-  fill: /* $foreground-color[*/#333/*]*/;
-  color: /* $foreground-color[*/#333/*]*/;
+  fill: /* $foreground-color[*/#333/*]*/ !important;
+  color: /* $foreground-color[*/#333/*]*/ !important;
   /*}*/
   /*? sidebar-foreground-color {*/
-  fill: /* $sidebar-foreground-color[*/#333/*]*/;
-  color: /* $sidebar-foreground-color[*/#333/*]*/;
+  fill: /* $sidebar-foreground-color[*/#333/*]*/ !important;
+  color: /* $sidebar-foreground-color[*/#333/*]*/ !important;
   /*}*/
 }
 
 .Do0spe, .mfqKsb, .DcCBcf
 {
-  color: /* $secondary-color[*/#333/*]*/;
+  color: /* $secondary-color[*/#333/*]*/ !important;
 }
 
 /*? sidebar-show-seperator {*/
@@ -126,7 +126,7 @@ body#yDmH0d > trans-layer > div
 .Tuxepf,
 .Gu1oT
 {
-  color: /* $highlight-color[*/initial/*]*/;
+  color: /* $highlight-color[*/initial/*]*/ !important;
 }
 
 .Tq8tEc,
@@ -135,7 +135,7 @@ body#yDmH0d > trans-layer > div
 .ahil4d.qhIQqf,
 .ikPEid
 {
-  color: /* $foreground-color[*/initial/*]*/;
+  color: /* $foreground-color[*/initial/*]*/ !important;
 }
 
 .MuKKBb,
@@ -144,7 +144,7 @@ body#yDmH0d > trans-layer > div
 .IAxesc, /* location infomation. */
 .vHTiT /* +1 of comments */
 {
-  color: /* $secondary-color[*/initial/*]*/;
+  color: /* $secondary-color[*/initial/*]*/ !important;
 }
 
 /*? link-color {*/
