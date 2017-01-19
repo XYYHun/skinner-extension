@@ -5,9 +5,10 @@
 
   const STYLE_ELEMENT_PREFIX = 'skinner-';
 
-  let generated_style_id_list = [];
-
   let enabled;
+
+  let profile_id;
+  let template_id_list;
 
   function update_style_element(index, style)
   {
@@ -35,7 +36,7 @@
 
   function disable()
   {
-    for (let index in generated_style_id_list)
+    for (let index in template_id_list)
     {
       const element = document.getElementById(STYLE_ELEMENT_PREFIX + index);
 
@@ -54,8 +55,8 @@
       },
       function(response)
       {
-        const profile_id = response['profile-id'];
-        const template_ids = response['template-ids'];
+        profile_id = response['profile-id'];
+        template_id_list = response['template-ids'];
 
         if (profile_id == 'disabled')
         {
@@ -64,19 +65,13 @@
           return;
         }
 
-        for (let index in template_ids)
-        {
+        if (template_id_list)
           chrome.runtime.sendMessage(
             {
               'request-generated-style' : true,
-              'index' : index,
               'profile-id' : profile_id,
-              'template-id' : template_ids[index],
-            }, function(response)
-            {
-              generated_style_id_list[index] = response['generated-style-id'];
+              'template-id-list' : template_id_list,
             });
-        }
       });
   }
 
@@ -101,12 +96,9 @@
 
       if (enable)
       {
-        for (let index in generated_style_id_list)
+        if (('options-' + profile_id) in changes)
         {
-          let generated_style_id = generated_style_id_list[index];
-
-          if (generated_style_id in changes)
-            update_style_element(index, changes[generated_style_id].newValue);
+          enable();
         }
       }
     });
@@ -118,7 +110,7 @@
     {
       let response = {};
 
-      if (request['update-style'])
+      if (request['response-generated-style'])
         update_style_element(request.index, request.style);
 
       if (request['profile-updated'] && enabled)
