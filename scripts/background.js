@@ -140,8 +140,6 @@ var uninstall_subscription;
 
     $.getJSON(proper_url + 'manifest.json', function(subscription)
     {
-      console.log(subscription);
-
       if (!subscription || !subscription.id)
         return;
 
@@ -164,11 +162,13 @@ var uninstall_subscription;
         storage_s.set({
           'subscription-table': subscription_table,
           'template-table': template_table,
-        })
+        });
+
+        storage_l.set({'force-update': (new Date()).toJSON()});
       }
 
       if (subscription_table && subscription.id in subscription_table)
-        uninstall_subscription(subscription.id, do_install);
+        uninstall_subscription(subscription.id, do_install, true);
       else
         do_install();
     });
@@ -307,7 +307,7 @@ var uninstall_subscription;
 
   /* initial */
 
-  const storage_version = '0.1.3';
+  const storage_version = '0.1.4';
 
   storage_l.get(['initialled', 'storage-version'], function(data)
   {

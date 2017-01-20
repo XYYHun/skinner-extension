@@ -4,16 +4,18 @@ let options;
 {
   let background_page = chrome.extension.getBackgroundPage();
 
-  let add_domain_to_profile = background_page.add_domain_to_profile;
-  let remove_domain_from_profile = background_page.remove_domain_from_profile;
-
-  let update_profile_table = background_page.update_profile_table;
-
   let get_profile_id = background_page.get_profile_id;
   let get_template_ids = background_page.get_template_ids;
 
   let get_options = background_page.get_options;
   let set_options = background_page.set_options;
+
+  let add_domain_to_profile = background_page.add_domain_to_profile;
+  let remove_domain_from_profile = background_page.remove_domain_from_profile;
+
+  let update_profile_table = background_page.update_profile_table;
+
+  let install_subscription = background_page.install_subscription;
 
   // TODO: remove;
   let storage_l = chrome.storage.local;
@@ -307,6 +309,10 @@ let options;
     });
   }
 
+  function update_subscriptions()
+  {
+    install_subscription('https://raw.githubusercontent.com/XYYHun/skinner-official-subscription/master');
+  }
 
   $(function()
   {
@@ -343,6 +349,7 @@ let options;
 
           $('[action=\'export-options\']').click(export_options);
           $('[action=\'import-options\']').click(import_options);
+          $('[action=\'update-subscriptions\']').click(update_subscriptions);
         });
       });
     
