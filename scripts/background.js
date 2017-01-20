@@ -1,21 +1,24 @@
 /* extenal functions */
 
+var get_profile_id;
+var get_template_ids;
+
+var get_options;
+var set_options;
+
 var add_domain_to_profile;
 var remove_domain_from_profile;
 
 var update_profile_table;
 
-var get_options;
-var set_options;
+var install_subscription;
+var uninstall_subscription;
 
-var get_profile_id;
-var get_template_ids;
-
-(function() /* Close */
 {
   /* local variables */
-  let profile_table = {};
-  let template_table = {};
+  let profile_table;
+  let subscription_table = {};
+  let template_table;
 
   let generated_style_cache = {};
 
@@ -27,7 +30,67 @@ var get_template_ids;
 
   let get_generated_style;
 
+  let test_matches;
+
   /* extenal functions */
+
+  get_profile_id = function(url)
+  {
+    for (let profile_id in profile_table)
+    {
+      let profile = profile_table[profile_id];
+
+      if (test_matches(url, profile_table[profile_id].matches))
+        return profile_id;
+    }
+
+    return 'default';
+  }
+
+  get_template_ids = function(url)
+  {
+    result = []
+
+    for (let id in template_table)
+    {
+      if (test_matches(url, template_table[id].matches))
+        result.push(id);
+    }
+
+    return result;
+  }
+
+  get_options = function(profile_id, callback)
+  {
+    const options_id = 'options-' + profile_id;
+
+    storage_s.get(options_id, function(data)
+    {
+      if (options_id in data)
+        callback(data[options_id]);
+      else
+        callback({});
+    });
+  };
+
+  set_options = function(profile_id, options)
+  {
+    const generated_style_pattern = /^generated-style:(.*?):(.*)$/;
+
+    for (let cached_style_id in generated_style_cache)
+    {
+      // TODO: use regexp match.
+      cached_style_id.replace(generated_style_pattern, function(full_match, cache_profile_id, template_id)
+      {
+        if (cache_profile_id == profile_id)
+        {
+          delete generated_style_cache[cached_style_id];
+        }
+      });
+    }
+
+    storage_s.set({['options-' + profile_id]: options});
+  };
 
   add_domain_to_profile = function(domain, profile_id)
   {
@@ -53,7 +116,7 @@ var get_template_ids;
     {
       let new_matches = []
 
-      for (var index in profile_data.matches)
+      for (let index in profile_data.matches)
       {
         if (profile_data.matches[index].value != domain)
           new_matches.push(profile_data.matches[index])
@@ -66,135 +129,180 @@ var get_template_ids;
   update_profile_table = function()
   {
     storage_s.set({'profile-table': profile_table});
+
+    // TODO: temp solution.
+    storage_l.set({'force-update': (new Date()).toJSON()});
   };
 
-  get_options = function(profile_id, callback)
+  install_subscription = function(subscription_url)
   {
-    const options_id = 'options-' + profile_id;
+    let proper_url = subscription_url.replace(/(|\/|\/manifest\.json)?$/, '/');
 
-    storage_s.get(options_id, function(data)
+    $.getJSON(proper_url + 'manifest.json', function(subscription)
     {
-      if (options_id in data)
-        callback(data[options_id]);
-      else
-        callback({});
-    });
-  };
+      console.log(subscription);
 
-  set_options = function(profile_id, options)
-  {
-    const generated_style_pattern = /^generated-style:([\w\-]*):([\w\-]*)$/;
+      if (!subscription || !subscription.id)
+        return;
 
-    let count = 0;
-
-    for (let cached_style_id in generated_style_cache)
-    {
-      count++;
-
-      cached_style_id.replace(generated_style_pattern, function(full_match, cached_profile_id, template_id)
+      function do_install()
       {
-        if (cached_profile_id == profile_id)
+        subscription.url = proper_url;
+
+        subscription_table[subscription.id] = subscription;
+
+        for (let template_index in subscription.templates)
         {
-          let template_info = template_table[template_id];
+          let template = subscription.templates[template_index];
 
-          if (template_info.type == 'addon')
-            $.get(template_info.url, function(template)
-            {
-              const generated_style_id = ['generated-style', profile_id, template_id].join(':');
-              generated_style_cache[generated_style_id] = style_template.generate(template, options);
+          if (template.url)
+            template.url = proper_url + template.url;
 
-              count--;
-
-              if (!count)
-              {
-                console.log('update options.');
-                storage_s.set({['options-' + profile_id]: options});
-              }
-            }, "text");
+          template_table[[subscription.id, template_index].join(':')] = template;
         }
+
+        storage_s.set({
+          'subscription-table': subscription_table,
+          'template-table': template_table,
+        })
+      }
+
+      if (subscription_table && subscription.id in subscription_table)
+        uninstall_subscription(subscription.id, do_install);
+      else
+        do_install();
+    });
+  }
+
+  uninstall_subscription = function(subscription_id, on_done, no_update_storage)
+  {
+    subscription = subscription_table[subscription_id];
+
+    if (!subscription)
+    {
+      if (on_done)
+        return on_done();
+      else
+        return;
+    }
+
+    let to_remove = []
+
+    // remove template.
+    for (let template_index in subscription.templates)
+    {
+      let template_id = [subscription.id, template_index].join(':');
+
+      delete template_table[template_id];
+
+      to_remove.push(['template-cache', template_id].join(':'));
+    }
+
+    // remove subscription.
+    delete subscription_table[subscription_id];
+
+    // update storage.
+    if (!no_update_storage)
+      storage_s.set({
+        'subscription-table': subscription_table,
+        'template-table': template_table,
       })
-    }
-  };
 
-  get_profile_id = function(url)
-  {
-    for (let profile_id in profile_table)
+    // remove template cache.
+    if (to_remove.length)
+      storage_l.remove(to_remove, on_done);
+    else
     {
-      let profile = profile_table[profile_id];
-
-      if (profile.matches)
-        for (let index in profile.matches)
-        {
-          let match = profile.matches[index];
-          let match_regexp;
-
-          switch (match.type)
-          {
-          case 'domain':
-            let domain;
-            //TODO: new plan: url => domain, then compares.
-            match_regexp = RegExp(
-              '^https?:\\/\\/(?:[^\\/]*@)?(?:[^\\s\\/:]+\\.)*' +
-              match.value.replace('.', '\\\.') + '(?::[\\d]*)?\\/.*');
-            break;
-          case 'regexp':
-          default:
-            match_regexp = RegExp(match.value);
-            break;
-          }
-
-          if (match_regexp.test(url))
-            return profile_id;
-        }
+      if (on_done)
+        return on_done();
+      else
+        return;
     }
-
-    return 'default';
   }
 
-  get_template_ids = function(url)
+  // TODO: profile_id || options
+  get_generated_style = function(profile_id, template_id, callback, options)
   {
-    result = []
+    const generated_style_id = ['generated-style', profile_id, template_id].join(':');
 
-    for (let id in template_table)
-    {
-      let template = template_table[id];
-
-      if (template['match-regexp'] && (new RegExp(template['match-regexp'])).test(url))
-        result.push(id);
-    }
-
-    return result;
-  }
-
-  get_generated_style = function(profile_id, template_id, callback, force_update)
-  {
     if (profile_id == 'disabled')
       return;
 
-    const generated_style_id = ['generated-style', profile_id, template_id].join(':');
-
-    if ((generated_style_id in generated_style_cache) && !force_update)
+    if (!options)
     {
-      if (callback)
-        callback(generated_style_cache[generated_style_id]);
-    }
-    else
-    {
-      get_options(profile_id, function(options)
+      if (generated_style_id in generated_style_cache)
       {
-        let template_info = template_table[template_id];
+        if (callback)
+          callback(generated_style_cache[generated_style_id]);
+      }
+      else
+      {
+        get_options(profile_id, function(options)
+        {
+          get_generated_style(profile_id, template_id, callback, options);
+        });
+      }
 
-        if (template_info.type == 'addon')
-          $.get(template_info.url, function(template)
-          {
-            generated_style_cache[generated_style_id] = style_template.generate(template, options);
-
-            callback(generated_style_cache[generated_style_id]);
-          }, "text");
-      });
+      return generated_style_id;
     }
+
+    const template_cache_id = ['template-cache', template_id].join(':');
+
+    storage_l.get(template_cache_id, function(data)
+    {
+      if (template_cache_id in data)
+      {
+        generated_style_cache[generated_style_id] = style_template.generate(data[template_cache_id], options);
+
+        callback(generated_style_cache[generated_style_id]);
+      }
+      else
+      {
+        $.get(template_table[template_id].url, function(template)
+        {
+          storage_l.set({[template_cache_id]: template});
+
+          generated_style_cache[generated_style_id] = style_template.generate(template, options);
+
+          callback(generated_style_cache[generated_style_id]);
+        }, "text");
+      }
+    });
 
     return generated_style_id;
+  }
+
+  test_matches = function(url, matches)
+  {
+    for (let index in matches)
+    {
+      let match = matches[index];
+
+      switch (match.type)
+      {
+      case 'domain':
+        {
+          let match_result = url.match(/^[^:]*:\/\/(?:[^@\s]*?@)?([^:\/]*?)(?::[^\/]*)?\//);
+
+          if (match_result && match_result[1] == match.value)
+            return true;
+        }
+
+        break;
+
+      case 'regexp':
+      default:
+        {
+          if ((new RegExp(match.value)).test(url))
+            return true;
+        }
+
+        break;
+      }
+
+    }
+
+    return false;
   }
 
   /* initial */
@@ -236,32 +344,14 @@ var get_template_ids;
       storage_l.set(to_set);
   });
 
-  storage_s.get(['profile-table', 'template-table'], function(data)
+  storage_s.get(['profile-table', 'subscription-table', 'template-table'], function(data)
   {
     profile_table = data['profile-table'] || {};
 
+    if (!data['subscription-table'])
+      install_subscription('https://raw.githubusercontent.com/XYYHun/skinner-official-subscription/master');
+
     template_table = data['template-table'] || {};
-    
-    if (!template_table['addon-google-plus'])
-      template_table['addon-google-plus'] = {
-        'type': 'addon',
-        'url': './templates/google-plus.template.css',
-        'match-regexp': '^https:\/\/plus\.google\.com\/',
-      };
-
-    if (!template_table['addon-facebook'])
-      template_table['addon-facebook'] = {
-        'type': 'addon',
-        'url': './templates/facebook.template.css',
-        'match-regexp': '^https?:\/\/(?:[\w\d]+\.)?facebook\.com\/',
-      };
-
-    if (!template_table['addon-twitter'])
-      template_table['addon-twitter'] = {
-        'type': 'addon',
-        'url': './templates/twitter.template.css',
-        'match-regexp': '^https?:\/\/(?:[\w\d]+\.)?twitter\.com\/',
-      };
   });
 
   chrome.runtime.onMessage.addListener(
@@ -297,4 +387,4 @@ var get_template_ids;
 
       sendResponse(response);
     });
-})();
+};

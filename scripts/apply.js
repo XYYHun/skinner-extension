@@ -92,6 +92,8 @@
           enable();
         else
           disable();
+
+        return;
       }
 
       if (enable)
@@ -99,8 +101,18 @@
         if (('options-' + profile_id) in changes)
         {
           enable();
+  
+          return;
+        }
+
+        if ('force-update' in changes)
+        {
+          enable();
+  
+          return;
         }
       }
+
     });
 
   });
