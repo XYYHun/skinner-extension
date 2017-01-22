@@ -9,10 +9,12 @@ var set_options;
 var add_domain_to_profile;
 var remove_domain_from_profile;
 
-var update_profile_table;
+var commit_profile_table;
+
+var get_subscription_table;
 
 var install_subscription;
-var uninstall_subscription;
+var remove_subscription;
 
 {
   /* local variables */
@@ -126,7 +128,7 @@ var uninstall_subscription;
     }
   };
 
-  update_profile_table = function()
+  commit_profile_table = function()
   {
     storage_s.set({'profile-table': profile_table});
 
@@ -134,7 +136,12 @@ var uninstall_subscription;
     storage_l.set({'force-update': (new Date()).toJSON()});
   };
 
-  install_subscription = function(subscription_url)
+  get_subscription_table = function()
+  {
+    return subscription_table;
+  }
+
+  install_subscription = function(subscription_url, on_done)
   {
     let proper_url = subscription_url.replace(/(|\/|\/manifest\.json)?$/, '/');
 
@@ -164,17 +171,20 @@ var uninstall_subscription;
           'template-table': template_table,
         });
 
+        if (on_done)
+          on_done();
+
         storage_l.set({'force-update': (new Date()).toJSON()});
       }
 
       if (subscription_table && subscription.id in subscription_table)
-        uninstall_subscription(subscription.id, do_install, true);
+        remove_subscription(subscription.id, do_install, true);
       else
         do_install();
     });
   }
 
-  uninstall_subscription = function(subscription_id, on_done, no_update_storage)
+  remove_subscription = function(subscription_id, on_done, no_update_storage)
   {
     subscription = subscription_table[subscription_id];
 
@@ -201,14 +211,7 @@ var uninstall_subscription;
     // remove subscription.
     delete subscription_table[subscription_id];
 
-    // update storage.
-    if (!no_update_storage)
-      storage_s.set({
-        'subscription-table': subscription_table,
-        'template-table': template_table,
-      })
-
-    // remove template cache.
+    // remove caches.
     if (to_remove.length)
       storage_l.remove(to_remove, on_done);
     else
@@ -217,6 +220,19 @@ var uninstall_subscription;
         return on_done();
       else
         return;
+    }
+
+    generated_style_cache = {};
+
+    // update storage.
+    if (!no_update_storage)
+    {
+      storage_s.set({
+        'subscription-table': subscription_table,
+        'template-table': template_table,
+      })
+
+      storage_l.set({'force-update': (new Date()).toJSON()});
     }
   }
 
@@ -284,7 +300,7 @@ var uninstall_subscription;
         {
           let match_result = url.match(/^[^:]*:\/\/(?:[^@\s]*?@)?([^:\/]*?)(?::[^\/]*)?\//);
 
-          if (match_result && match_result[1] == match.value)
+          if (match_result && match_result[1].endsWith(match.value))
             return true;
         }
 
@@ -350,6 +366,8 @@ var uninstall_subscription;
 
     if (!data['subscription-table'])
       install_subscription('https://raw.githubusercontent.com/XYYHun/skinner-official-subscription/master');
+    else
+      subscription_table = data['subscription-table'];
 
     template_table = data['template-table'] || {};
   });

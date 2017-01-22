@@ -75,7 +75,7 @@ body:not(.show-warning)
 
 #option-pages {
   position: relative;
-  width: 150px;
+  width: 160px;
   min-height: 320px;
   padding: 10px;
   background: rgba(64,128,256,.1);
@@ -116,8 +116,8 @@ body:not(.show-warning)
   position: absolute;
   top: 0px;
   bottom: 0px;
-  left: 150px;
-  width: 450px;
+  left: 160px;
+  width: 440px;
   overflow: auto;
 }
 
@@ -144,7 +144,7 @@ body:not(.show-warning)
 
 .option .label {
   position: relative;
-  width: 160px;
+  width: 150px;
   text-align: right;
   margin-right: 12px;
 }
@@ -155,6 +155,11 @@ body:not(.show-warning)
   position: absolute;
   top: 0px;
   right: -6px;
+}
+
+.option .label.placeholder::after
+{
+  display: none;
 }
 
 .option .value-area

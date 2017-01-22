@@ -13,9 +13,12 @@ let options;
   let add_domain_to_profile = background_page.add_domain_to_profile;
   let remove_domain_from_profile = background_page.remove_domain_from_profile;
 
-  let update_profile_table = background_page.update_profile_table;
+  let commit_profile_table = background_page.commit_profile_table;
+
+  let get_subscription_table = background_page.get_subscription_table;
 
   let install_subscription = background_page.install_subscription;
+  let remove_subscription = background_page.remove_subscription;
 
   // TODO: remove;
   let storage_l = chrome.storage.local;
@@ -245,7 +248,7 @@ let options;
 
       add_domain_to_profile(caller_domain, profile_id)
 
-      update_profile_table();
+      commit_profile_table();
 
       $('#profile-selection .span-button.active').removeClass('active');
       $(this).addClass('active');
@@ -314,9 +317,78 @@ let options;
     install_subscription('https://raw.githubusercontent.com/XYYHun/skinner-official-subscription/master');
   }
 
+  function initial_subscription_list()
+  {
+    let subscription_table = get_subscription_table();
+
+    let subscription_container = $('#installed-subscriptions').empty();
+
+    for (let subscription_key in subscription_table)
+    {
+      let subscription = subscription_table[subscription_key];
+
+      let subscription_element = $.parseHTML(`
+            <div class='option'>
+              <span class='label'>Subscription Name</span>
+              <div class='value-area'>
+                <span class='subscription-version'>no version infomation.</span><br/>
+                <span class='span-button' action='update-subscription'>Update</span>
+                <span class='span-button' action='remove-subscription'>Remove</span>
+              </div>
+            </div>`);
+
+      $(subscription_element).find('.label').text(subscription.name);
+      $(subscription_element).find('.subscription-version').text(subscription.version);
+
+      $(subscription_element).find('[action=\'update-subscription\']').click(function()
+      {
+        install_subscription(subscription.url, function()
+        {
+          initial_subscription_list();
+        })
+      });
+
+      $(subscription_element).find('[action=\'remove-subscription\']').click(function()
+      {
+        remove_subscription(subscription.id, function()
+        {
+          initial_subscription_list();
+        })
+      });
+
+      subscription_container.append(subscription_element);
+    }
+  }
+
+  function initial_subscriptions_page()
+  {
+    initial_subscription_list();
+
+    $('#subscription-to-install')
+      .unbind('paste')
+      .unbind('focus')
+      .bind('paste', on_editable_span_paste)
+      .focus(function()
+      {
+        select_span_text($('#subscription-to-install')[0]);
+      });
+
+    $('[action=\'install-subscription\']').click(function()
+    {
+      let url = $('#subscription-to-install').text();
+
+      install_subscription(url, function()
+      {
+        initial_subscription_list();
+      });
+    })
+  }
+
   $(function()
   {
     $('.option-page').click(on_option_page_clicked);
+
+    $('#options-code').bind('paste', on_editable_span_paste);
 
     chrome.tabs.query({active: true, currentWindow: true},
       function(tabs)
@@ -325,7 +397,7 @@ let options;
 
         if (get_template_ids(url).length == 0)
         {
-          $('#warning-container').addClass('shown');
+          // $('#warning-container').addClass('shown');
 
           return;
         }
@@ -357,6 +429,8 @@ let options;
     {
       initial_master_switch(data['enabled']);
     });
+
+    initial_subscriptions_page();
   });
 
 })();

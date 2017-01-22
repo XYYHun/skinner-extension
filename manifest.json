@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Skinner",
-  "version": "0.1.4",
+  "version": "0.1.5",
 
   "description": "Customize your Google+, Twitter or Facebook's visual appearence.",
 
@@ -34,11 +34,7 @@
 
 	"content_scripts": [
 		{
-			"matches": [
-        "https://plus.google.com/*",
-        "https://*.facebook.com/*",
-        "https://*.twitter.com/*"
-      ],
+			"matches": ["<all_urls>"],
 			"run_at": "document_end",
 			"all_frames": true,
 			"js": ["./scripts/apply.js"]

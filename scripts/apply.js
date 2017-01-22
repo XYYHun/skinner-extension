@@ -55,15 +55,13 @@
       },
       function(response)
       {
+        disable();
+
         profile_id = response['profile-id'];
         template_id_list = response['template-ids'];
 
         if (profile_id == 'disabled')
-        {
-          disable();
-
           return;
-        }
 
         if (template_id_list)
           chrome.runtime.sendMessage(
@@ -96,7 +94,7 @@
         return;
       }
 
-      if (enable)
+      if (enabled)
       {
         if (('options-' + profile_id) in changes)
         {
