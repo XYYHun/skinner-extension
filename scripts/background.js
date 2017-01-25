@@ -46,7 +46,7 @@ var remove_subscription;
         return profile_id;
     }
 
-    return 'default';
+    return 'disabled';
   }
 
   get_template_ids = function(url)
@@ -96,7 +96,7 @@ var remove_subscription;
 
   add_domain_to_profile = function(domain, profile_id)
   {
-    if (profile_id == 'default')
+    if (profile_id == 'disabled')
       return;
 
     let profile_data = profile_table[profile_id];
@@ -323,42 +323,46 @@ var remove_subscription;
 
   /* initial */
 
-  const storage_version = '0.1.4';
-
-  storage_l.get(['initialled', 'storage-version'], function(data)
+  function initial_storage_l()
   {
-    let to_set = {};
+    const storage_version = '0.1.4';
 
-    if (!('initialled' in data))
+    storage_l.get(['initialled', 'storage-version'], function(data)
     {
-      to_set['enabled'] = true;
-      to_set['initialled'] = true;
-    }
+      let to_set = {};
 
-    if (data['storage-version'] != storage_version)
-    {
-      to_set['storage-version'] = storage_version;
-
-      // remove all styles cached in local storage.
-      storage_l.get(null, function(data)
+      if (!('initialled' in data))
       {
-        const generated_style_id_pattern = /^generated-style/;
+        to_set['enabled'] = true;
+        to_set['initialled'] = true;
+        add_domain_to_profile('plus.google.com', 'default');
+      }
 
-        let to_remove = [];
+      if (data['storage-version'] != storage_version)
+      {
+        to_set['storage-version'] = storage_version;
 
-        for (let key in data)
+        // remove all styles cached in local storage.
+        storage_l.get(null, function(data)
         {
-          if (key.match(generated_style_id_pattern))
-            to_remove.push(key);
-        }
+          const generated_style_id_pattern = /^generated-style/;
 
-        storage_l.remove(to_remove);
-      });
-    }
+          let to_remove = [];
 
-    if (Object.keys(to_set).length)
-      storage_l.set(to_set);
-  });
+          for (let key in data)
+          {
+            if (key.match(generated_style_id_pattern))
+              to_remove.push(key);
+          }
+
+          storage_l.remove(to_remove);
+        });
+      }
+
+      if (Object.keys(to_set).length)
+        storage_l.set(to_set);
+    });
+  }
 
   storage_s.get(['profile-table', 'subscription-table', 'template-table'], function(data)
   {
@@ -370,6 +374,8 @@ var remove_subscription;
       subscription_table = data['subscription-table'];
 
     template_table = data['template-table'] || {};
+
+    initial_storage_l();
   });
 
   chrome.runtime.onMessage.addListener(
