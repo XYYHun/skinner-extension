@@ -166,7 +166,7 @@ body:not(.show-warning)
 {
   display: inline-block;
   vertical-align: top;
-  width: 220px;
+  width: 210px;
 }
 
 .text-option
@@ -175,7 +175,7 @@ body:not(.show-warning)
   padding: 2px 4px 1px 4px;
   margin: 2px 8px 2px -4px;
   border-bottom: 1px solid transparent;
-  max-width: 220px;
+  max-width: 210px;
 }
 
 .text-option:focus
